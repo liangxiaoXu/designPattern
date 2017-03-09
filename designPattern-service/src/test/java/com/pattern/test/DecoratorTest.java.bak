@@ -1,0 +1,128 @@
+package com.pattern.test;
+
+import org.junit.Test;
+
+import java.io.*;
+
+/**
+ * 装饰模式测试类
+ * 本例使用BufferedOutputStream来说明装饰模式的使用
+ * BufferedOutputStream 继承FilterOutputStream ，FilterOutputStream 又继承 OutputStream(抽象类)
+ * FileOutputStream 继承 OutputStream
+ *
+ * 例如现在我们往一个文件中写数据
+ * FileOutputStream 是被装饰者，实现“写”的功能
+ * BufferedOutputStream 是装饰者，在“写”的基础上使用“缓冲区”从而提升性能。它的底层还是调用FileOutputStream的“写”
+ *
+ */
+public class DecoratorTestBak {
+
+    @Test
+    public void writeFile() {
+
+        File file = new File("D:/1.txt");
+        //若文件不存在，则创建
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        new Thread(new Runnable() {
+            //监控文件大小，每当文件大小变化时，打印出最新的size
+            @Override
+            public void run() {
+                File file = new File("D:/1.txt");
+                long initSize = file.getUsableSpace();   //文件初始大小
+                System.out.println("文件初始大小为:" + initSize);
+                while (true) {
+                    long currentSize = file.getUsableSpace();
+//            System.out.println("文件当前大小为:" + currentSize);
+                    if (currentSize - initSize != 0) {
+                        initSize = currentSize;
+                        System.out.println("文件大小发生变化，当前大小为:" + currentSize);
+                    }
+                }
+
+            }
+        }).start();
+
+        try {
+            Thread.sleep(1000l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //BufferedOutputStream的方式
+//        bufferedOutPut(file);
+
+        //FileOutputStream的方式
+        fileOutPut(file);
+
+    }
+
+    /**
+     * file方式
+     *
+     * @param file
+     */
+    private void fileOutPut(File file) {
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(file);
+            writeData(os);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * buffered方式
+     *
+     * @param file
+     */
+    private void bufferedOutPut(File file) {
+
+        OutputStream os = null;
+        try {
+            os = new BufferedOutputStream(new FileOutputStream(file));
+            writeData(os);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    private void writeData(OutputStream os) throws Exception {
+
+        for (int i = 0; i < 10000; i++) {
+            os.write("abcdefghijklmnopqrstuvwxyz\n".getBytes());
+            try {
+                Thread.sleep(5l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        os.flush();
+
+    }
+}
+
