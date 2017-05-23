@@ -3,5 +3,3 @@
 使用JUnit运行，每一个模式都有一个对应的测试类。
 demo代码目录为：com.pattern.service
 对应的测试类对应的目录为：com.pattern.test
-
-++++++++++
