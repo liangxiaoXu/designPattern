@@ -1,6 +1,5 @@
 package com.pattern.service.Observer.pushModel;
 
-import java.io.File;
 
 /**
  *
@@ -17,7 +16,5 @@ public class PushMain {
         String pushInfo = "you changed!";
         observable.notifyObservers( pushInfo );
 
-//        File f = new File("D:\\IdeaProjects\\designPattern\\gitignore");
-//        f.renameTo(new File("D:\\IdeaProjects\\designPattern\\.gitignore"));
     }
 }
