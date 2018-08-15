@@ -27,9 +27,15 @@ public class ChainOfResponsibilityTest {
         handler1.setHandler(handler2);
         handler2.setHandler(handler3);
 
-//        handler1.setHandler(handler3);
+
+        //验证责任链模式循环调用，如果没有退出，则最终会导致StackOverflowError
+
+//        handler1.setHandler(handler2);
+//        handler2.setHandler(handler3);
+//        handler3.setHandler(handler1);
 
         handler1.operator();
+
     }
 
     /**
